@@ -2,6 +2,7 @@ package com.project_nikhil.SecureOfferHub.controller;
 
 import com.project_nikhil.SecureOfferHub.model.Offer;
 import com.project_nikhil.SecureOfferHub.repository.OfferRepository;
+import com.project_nikhil.SecureOfferHub.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,34 +14,25 @@ import java.util.List;
 @RequestMapping("/api/offers")
 public class OfferController {
     @Autowired
-    private OfferRepository offerRepository;
+    private OfferService offerService;
+
     @GetMapping
     public List<Offer> getAllActiveOffers() {
-        return offerRepository.findByActiveTrue();
+        return offerService.getAllActiveOffers();
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Offer createOffer(@RequestBody Offer offer) {
-        return offerRepository.save(offer);
+        return offerService.createOffer(offer);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Offer> updateOffer(@PathVariable String id, @RequestBody Offer offerDetails) {
-        return offerRepository.findById(id).map(offer -> {
-            offer.setTitle(offerDetails.getTitle());
-            offer.setDescription(offerDetails.getDescription());
-            offer.setStartDate(offerDetails.getStartDate());
-            offer.setEndDate(offerDetails.getEndDate());
-            offer.setActive(offerDetails.isActive());
-            return ResponseEntity.ok(offerRepository.save(offer));
-        }).orElse(ResponseEntity.notFound().build());
+        return offerService.updateOffer(id, offerDetails);
     }
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteOffer(@PathVariable String id) {
-        return offerRepository.findById(id).map(offer -> {
-            offerRepository.delete(offer);
-            return ResponseEntity.ok().build();
-        }).orElse(ResponseEntity.notFound().build());
+        return offerService.deleteOffer(id);
     }
 }

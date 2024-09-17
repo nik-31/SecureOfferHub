@@ -14,6 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 @SpringBootTest
 public class AuthenticationControllerTest {
     @Autowired
@@ -27,7 +30,7 @@ public class AuthenticationControllerTest {
 
     @Test
     public void checkLoginTest() {
-        User user = new User("3", "nikhil2", "nik23@gmail.com","122", "ADMIN");
+        User user = new User("3", "nikhil2", "nik23@gmail.com","122", new ArrayList<>(Collections.singleton("ADMIN")));
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())); // password should be hashed
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -36,7 +39,7 @@ public class AuthenticationControllerTest {
     }
     @Test
     public void registerUserTest() {
-        User user = new User("3", "nikhil2", "nik23@gmail.com","122", "ADMIN");
+        User user = new User("3", "nikhil2", "nik23@gmail.com","122", new ArrayList<>(Collections.singleton("ADMIN")));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Assertions.assertEquals(user, userRepository.save(user));

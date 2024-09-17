@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,7 +19,11 @@ public class OfferService {
     public List<Offer> getAllActiveOffers() {
         return offerRepository.findByActiveTrue();
     }
-    public Offer createOffer(@RequestBody Offer offer) {
+    public Offer createOffer(@RequestBody Offer offer) throws Exception {
+        Date todaysDate = new Date();
+        if(todaysDate.compareTo(offer.getStartDate()) < 0) {
+            throw new Exception("You cannot add previous Date");
+        }
         return offerRepository.save(offer);
     }
     public ResponseEntity<Offer> updateOffer(@PathVariable String id, @RequestBody Offer offerDetails) {

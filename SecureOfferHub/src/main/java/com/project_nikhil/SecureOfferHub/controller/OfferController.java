@@ -1,7 +1,6 @@
 package com.project_nikhil.SecureOfferHub.controller;
 
 import com.project_nikhil.SecureOfferHub.model.Offer;
-import com.project_nikhil.SecureOfferHub.repository.OfferRepository;
 import com.project_nikhil.SecureOfferHub.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ public class OfferController {
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public Offer createOffer(@RequestBody Offer offer) {
+    public Offer createOffer(@RequestBody Offer offer) throws Exception {
         return offerService.createOffer(offer);
     }
     @PreAuthorize("hasRole('ADMIN')")
